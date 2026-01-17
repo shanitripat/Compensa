@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% load widget_tweaks %}  <!-- ✅ NEW: load widget_tweaks -->
+{% load widget_tweaks %}
 
 {% block content %}
 <style>
-  /* ✅ NEW: Dark theme + unified styling */
+  /* ✅ Light theme + unified styling */
   body {
-    background: #0d1117; /* Dark contrasting background */
-    color: #c9d1d9;
+    background: linear-gradient(135deg, #f5f7fa, #e4ebf5); /* soft gradient background */
+    color: #0D1B2A;  /* Dark navy text */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
   .register-wrapper {
-    max-width: 900px;  /* ✅ NEW: wider for two-column layout */
+    max-width: 900px;  /* wider for two-column layout */
     margin: 80px auto;
-    background-color: #161b22;
-    border: 1px solid #30363d;
+    background-color: #ffffff; /* clean white panel */
+    border: 1px solid #d0d7de;
     border-radius: 8px;
     padding: 30px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* subtle shadow */
   }
 
   .register-wrapper h3 {
@@ -25,24 +25,24 @@
     font-weight: 600;
     text-align: center;
     margin-bottom: 20px;
-    color: #ffffff;
+    color: #00695F; /* deep blue heading */
   }
 
   .form-label {
     font-weight: 500;
     margin-bottom: 5px;
     display: block;
-    color: #c9d1d9;
+    color: #0D1B2A;
   }
 
-  /* ✅ NEW: Beautified input fields */
+  /* Beautified input fields with teal focus */
   .form-control {
     width: 100%;
     padding: 12px 15px;
-    border-radius: 8px;   /* Rounded corners */
-    border: 1px solid #30363d;
-    background-color: #0d1117;
-    color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #d0d7de;
+    background-color: #ffffff;
+    color: #0D1B2A;
     font-size: 14px;
     margin-bottom: 15px;
     box-sizing: border-box;
@@ -50,12 +50,12 @@
   }
 
   .form-control:focus {
-    border-color: #58a6ff;
-    box-shadow: 0 0 0 3px rgba(88,166,255,0.3);
+    border-color: #00D7BD; /* teal border on focus */
+    box-shadow: 0 0 0 3px rgba(0,215,189,0.3);
     outline: none;
   }
 
-  /* ✅ NEW: Grid layout for side-by-side fields */
+  /* Grid layout for side-by-side fields */
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr; /* two equal columns */
@@ -65,17 +65,19 @@
   .btn-register {
     width: 100%;
     padding: 12px;
-    background-color: #238636;
-    color: white;
+    background-color: #00695F; /* deep blue button */
+    color: #FFFFFF;
     border: none;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 20px; /* ✅ NEW: spacing above button */
+    margin-top: 20px;
+    transition: background-color 0.2s;
   }
 
   .btn-register:hover {
-    background-color: #2ea043;
+    background-color: #00D7BD; /* teal hover */
+    color: #0D1B2A;
   }
 
   .error-message {
@@ -91,11 +93,11 @@
     text-align: center;
     margin-top: 15px;
     font-size: 14px;
-    color: #8b949e;
+    color: #555555;
   }
 
   .footer-text a {
-    color: #58a6ff;
+    color: #00695F; /* deep blue links */
     text-decoration: none;
   }
 
@@ -104,22 +106,19 @@
   }
 </style>
 
-<div class="register-wrapper">  <!-- ✅ NEW: wrapper replaces bootstrap card -->
+<div class="register-wrapper">
   <h3>Create Your Account</h3>
 
-  <!-- Show Django messages (success/error) -->
   {% if messages %}
     {% for message in messages %}
-      <div class="error-message">{{ message }}</div> <!-- ✅ NEW: styled error -->
+      <div class="error-message">{{ message }}</div>
     {% endfor %}
   {% endif %}
 
-  <!-- Registration Form -->
   <form method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <!-- ✅ NEW: Grid layout applied -->
     <div class="form-grid">
       <div>
         <label class="form-label" for="id_username">Username</label>

@@ -1,22 +1,24 @@
 {% extends "base.html" %}
-{% load widget_tweaks %}  <!-- ✅ NEW: load widget_tweaks -->
+{% load widget_tweaks %}
 
 {% block content %}
 <style>
   body {
-    background: #0d1117; /* Dark contrasting background */
-    color: #c9d1d9;
+    background: linear-gradient(135deg, #f5f7fa, #e4ebf5);
+    color: #0D1B2A;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
   .login-wrapper {
     max-width: 420px;
     margin: 100px auto;
-    background-color: #161b22;
-    border: 1px solid #30363d;
+    background-color: #ffffff;
+    border: 1px solid #d0d7de;
     border-radius: 8px;
     padding: 30px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1;
   }
 
   .login-wrapper h1 {
@@ -24,42 +26,42 @@
     font-weight: 600;
     text-align: center;
     margin-bottom: 20px;
-    color: #ffffff;
+    color: #00695F;
   }
 
-  /* ✅ NEW: Beautified input fields */
   .form-control {
     width: 100%;
     padding: 12px 15px;
-    border-radius: 8px;   /* Rounded corners */
-    border: 1px solid #30363d;
-    background-color: #0d1117;
-    color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #d0d7de;
+    background-color: #ffffff;
+    color: #0D1B2A;
     font-size: 14px;
     margin-bottom: 15px;
-    box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
 
   .form-control:focus {
-    border-color: #58a6ff;
-    box-shadow: 0 0 0 3px rgba(88,166,255,0.3);
+    border-color: #00D7BD;
+    box-shadow: 0 0 0 3px rgba(0,215,189,0.3);
     outline: none;
   }
 
   .btn-login {
     width: 100%;
     padding: 12px;
-    background-color: #238636;
-    color: white;
+    background-color: #00695F;
+    color: #FFFFFF;
     border: none;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.2s;
   }
 
   .btn-login:hover {
-    background-color: #2ea043;
+    background-color: #00D7BD;
+    color: #0D1B2A;
   }
 
   .error-message {
@@ -75,19 +77,117 @@
     text-align: center;
     margin-top: 15px;
     font-size: 14px;
-    color: #8b949e;
+    color: #555555;
   }
 
   .footer-text a {
-    color: #58a6ff;
+    color: #00695F;
     text-decoration: none;
   }
 
   .footer-text a:hover {
     text-decoration: underline;
   }
+
+  .footer-left {
+    position: fixed;
+    bottom: 10px;
+    left: 15px;
+    font-size: 13px;
+    color: #555555;
+  }
+
+  .holiday-link {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    font-size: 14px;
+    color: #00695F;
+    text-decoration: none;
+    font-weight: 500;
+    z-index: 2;
+  }
+
+  .holiday-link:hover {
+    color: #00D7BD;
+    text-decoration: underline;
+  }
+
+  .holiday-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+
+  .holiday-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    padding: 20px;
+    z-index: 1001;
+  }
+
+  .holiday-popup h3 {
+    margin-top: 0;
+    color: #00695F;
+    text-align: center;
+  }
+
+  /* ✅ Inline holiday list */
+  .holiday-popup ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .holiday-popup ul li {
+    font-size: 14px;
+    color: #0D1B2A;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 6px 10px;
+    background: #f9f9f9;
+  }
+
+  .holiday-popup .close-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 8px 12px;
+    background: #00695F;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .holiday-popup .close-btn:hover {
+    background: #00D7BD;
+    color: #0D1B2A;
+  }
 </style>
 
+<!-- ✅ Holiday link -->
+<a href="#" class="holiday-link" onclick="showHolidayPopup(); return false;">
+  📅 Company Holidays
+</a>
+
+<!-- ✅ Login box -->
 <div class="login-wrapper">
   <h1>Sign in to Compensa</h1>
 
@@ -97,18 +197,17 @@
     </div>
   {% endif %}
 
-  <form method="post" action=""> <!-- ✅ ensure action posts to same URL -->
-    {% csrf_token %} <!-- ✅ CSRF protection -->
+  <form method="post" action="">
+    {% csrf_token %}
     <label class="form-label" for="id_username">Username or email address</label>
-    {{ form.username|add_class:"form-control" }}  <!-- ✅ NEW: widget_tweaks adds class -->
+    {{ form.username|add_class:"form-control" }}
 
     <label class="form-label" for="id_password">Password</label>
-    {{ form.password|add_class:"form-control" }}  <!-- ✅ NEW: widget_tweaks adds class -->
+    {{ form.password|add_class:"form-control" }}
 
     <button type="submit" class="btn-login">Sign in</button>
   </form>
 
-  <!-- ✅ NEW: Forgot password link -->
   <p class="mt-3 text-center">
     <a href="{% url 'forgot_password' %}">Forgot password?</a>
   </p>
@@ -117,4 +216,36 @@
     <p>New to Compensa? <a href="{% url 'register' %}">Create an account</a></p>
   </div>
 </div>
+
+<!-- ✅ Popup + overlay -->
+<div id="holidayOverlay" class="holiday-overlay"></div>
+
+<div id="holidayPopup" class="holiday-popup">
+  <h3>Company Holidays - Jan 2026</h3>
+  <ul>
+    <li>🎄 Christmas – 1st January 2026</li>
+    <li>🇮🇳 Republic Day – 26th January 2026</li>
+    <li>🪔 Diwali – 15th January 2026</li>
+    <li>🌸 Holi – 28th January 2026</li>
+  </ul>
+  <button class="close-btn" onclick="hideHolidayPopup()">Close</button>
+</div>
+
+<!-- ✅ Copyright -->
+<div class="footer-left">
+  &copy; 2026 All Rights Reserved.
+</div>
+
+<!-- ✅ JS to toggle popup -->
+<script>
+  function showHolidayPopup() {
+    document.getElementById('holidayPopup').style.display = 'block';
+    document.getElementById('holidayOverlay').style.display = 'block';
+  }
+
+  function hideHolidayPopup() {
+    document.getElementById('holidayPopup').style.display = 'none';
+    document.getElementById('holidayOverlay').style.display = 'none';
+  }
+</script>
 {% endblock %}
