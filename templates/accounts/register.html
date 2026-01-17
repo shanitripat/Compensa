@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}  <!-- ✅ NEW: load widget_tweaks -->
+
+{% block content %}
+<style>
+  /* ✅ NEW: Dark theme + unified styling */
+  body {
+    background: #0d1117; /* Dark contrasting background */
+    color: #c9d1d9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .register-wrapper {
+    max-width: 900px;  /* ✅ NEW: wider for two-column layout */
+    margin: 80px auto;
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+
+  .register-wrapper h3 {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #c9d1d9;
+  }
+
+  /* ✅ NEW: Beautified input fields */
+  .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;   /* Rounded corners */
+    border: 1px solid #30363d;
+    background-color: #0d1117;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-control:focus {
+    border-color: #58a6ff;
+    box-shadow: 0 0 0 3px rgba(88,166,255,0.3);
+    outline: none;
+  }
+
+  /* ✅ NEW: Grid layout for side-by-side fields */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* two equal columns */
+    gap: 20px 30px; /* row gap, column gap */
+  }
+
+  .btn-register {
+    width: 100%;
+    padding: 12px;
+    background-color: #238636;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px; /* ✅ NEW: spacing above button */
+  }
+
+  .btn-register:hover {
+    background-color: #2ea043;
+  }
+
+  .error-message {
+    background-color: #f85149;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .footer-text {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #8b949e;
+  }
+
+  .footer-text a {
+    color: #58a6ff;
+    text-decoration: none;
+  }
+
+  .footer-text a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="register-wrapper">  <!-- ✅ NEW: wrapper replaces bootstrap card -->
+  <h3>Create Your Account</h3>
+
+  <!-- Show Django messages (success/error) -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="error-message">{{ message }}</div> <!-- ✅ NEW: styled error -->
+    {% endfor %}
+  {% endif %}
+
+  <!-- Registration Form -->
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <!-- ✅ NEW: Grid layout applied -->
+    <div class="form-grid">
+      <div>
+        <label class="form-label" for="id_username">Username</label>
+        {{ form.username|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_password1">Password</label>
+        {{ form.password1|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_password2">Confirm Password</label>
+        {{ form.password2|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_full_name">Full Name</label>
+        {{ form.full_name|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_imp_code">Imp Code</label>
+        {{ form.imp_code|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_grade">Grade</label>
+        {{ form.grade|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_location">Location</label>
+        {{ form.location|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_function_name">Function Name</label>
+        {{ form.function_name|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_line_manager">Line Manager</label>
+        {{ form.line_manager|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_function_manager">Function Manager</label>
+        {{ form.function_manager|add_class:"form-control" }}
+      </div>
+
+      <div>
+        <label class="form-label" for="id_functional_head">Functional Head</label>
+        {{ form.functional_head|add_class:"form-control" }}
+      </div>
+    </div>
+
+    <button type="submit" class="btn-register">Register</button>
+  </form>
+
+  <div class="footer-text">
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>New Payroll Submission</h4>
+<form method="post">
+  {% csrf_token %}
+  
+  <div class="mb-3">
+    {{ sub_form.payroll_month.label_tag }} {{ sub_form.payroll_month }}
+  </div>
+
+  <!-- ✅ Management form must be outside the table -->
+  {{ formset.management_form }}
+
+  <table class="table table-bordered" id="entry-table">
+    <thead>
+      <tr>
+        <th>Employee ID</th><th>Name</th><th>Grade</th><th>Location</th>
+        <th>Payroll Name</th><th>Days</th><th>Per Day</th><th>Final Amount</th>
+        <th>Holiday</th><th>Function Name</th><th>Line Manager</th>
+        <th>Function Manager</th><th>Functional Head</th><th>Remarks</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in formset %}
+      <tr class="entry-row">
+        <td>{{ form.employee_id }}</td>
+        <td>{{ form.name }}</td>
+        <td>{{ form.grade }}</td>
+        <td>{{ form.location }}</td>
+        <td>{{ form.payroll_name }}</td>
+        <td>{{ form.days }}</td>
+        <td>{{ form.per_day }}</td>
+        <td>{{ form.final_amount }}</td>
+        <td>{{ form.holiday }}</td>
+        <td>{{ form.function_name }}</td>
+        <td>{{ form.line_manager }}</td>
+        <td>{{ form.function_manager }}</td>
+        <td>{{ form.functional_head }}</td>
+        <td>{{ form.remarks }}</td>
+        <td><button type="button" class="btn btn-sm btn-outline-danger remove-row">Delete</button></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="button" id="add-row" class="btn btn-outline-primary">+ Add Row</button>
+  <button type="submit" class="btn btn-success">Submit</button>
+</form>
+
+<script>
+(function(){
+  const addBtn = document.getElementById('add-row');
+  const tableBody = document.querySelector('#entry-table tbody');
+  const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+
+  function cloneRow(){
+    const rows = document.querySelectorAll('.entry-row');
+    const newIndex = rows.length;
+    const template = rows[0].cloneNode(true);
+
+    template.querySelectorAll('input, select, textarea').forEach((el)=>{
+      el.name = el.name.replace(/form-(\d+)-/, `form-${newIndex}-`);
+      el.id = el.id.replace(/id_form-(\d+)-/, `id_form-${newIndex}-`);
+      if(el.type === 'checkbox'){ 
+        el.checked = false; 
+      } else { 
+        el.value = ''; 
+      }
+    });
+
+    tableBody.appendChild(template);
+    totalForms.value = newIndex + 1;
+  }
+
+  addBtn.addEventListener('click', cloneRow);
+
+  tableBody.addEventListener('click', function(e){
+    if(e.target.classList.contains('remove-row')){
+      const rows = document.querySelectorAll('.entry-row');
+      if(rows.length > 1){
+        e.target.closest('tr').remove();
+        totalForms.value = document.querySelectorAll('.entry-row').length;
+      }
+    }
+  });
+
+  tableBody.addEventListener('input', function(e){
+    const row = e.target.closest('tr');
+    const days = parseFloat(row.querySelector('[name$="days"]').value) || 0;
+    const perDay = parseFloat(row.querySelector('[name$="per_day"]').value) || 0;
+    const final = row.querySelector('[name$="final_amount"]');
+    final.value = (days * perDay).toFixed(2);
+  });
+})();
+</script>
+{% endblock %}

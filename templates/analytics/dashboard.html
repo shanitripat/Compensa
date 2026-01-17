@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>My Payroll Submissions</h4>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Payroll Month</th>
+      <th>Employee ID</th>
+      <th>Name</th>
+      <th>Grade</th>
+      <th>Location</th>
+      <th>Payroll Name</th>
+      <th>Days</th>
+      <th>Per Day</th>
+      <th>Final Amount</th>
+      <th>Holiday</th>
+      <th>Function Name</th>
+      <th>Line Manager</th>
+      <th>Function Manager</th>
+      <th>Functional Head</th>
+      <th>Remarks</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for submission in submissions %}
+      {% for entry in submission.entries.all %}
+      <tr>
+        <td>{{ submission.payroll_month }}</td>
+        <td>{{ entry.employee_id }}</td>
+        <td>{{ entry.name }}</td>
+        <td>{{ entry.grade }}</td>
+        <td>{{ entry.location }}</td>
+        <td>{{ entry.payroll_name }}</td>
+        <td>{{ entry.days }}</td>
+        <td>{{ entry.per_day }}</td>
+        <td>{{ entry.final_amount }}</td>
+        <td>{{ entry.holiday }}</td>
+        <td>{{ entry.function_name }}</td>
+        <td>{{ entry.line_manager }}</td>
+        <td>{{ entry.function_manager }}</td>
+        <td>{{ entry.functional_head }}</td>
+        <td>{{ entry.remarks }}</td>
+        <td>
+          <a href="{% url 'delete_entry' entry.id %}" 
+             class="btn btn-sm btn-outline-danger"
+             onclick="return confirm('Are you sure you want to delete this entry?');">
+             Delete
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

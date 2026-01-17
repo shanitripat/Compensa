@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Welcome, {{ user.get_username }}</h4>
+  <div>
+    <a class="btn btn-primary" href="{% url 'new_submission' %}">+ New Payroll Submission</a>
+    {% if user.is_superuser %}
+      <a class="btn btn-outline-danger" href="{% url 'export_all_submissions_csv' %}">
+        Export All Submissions (CSV)
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>Payroll Month</th>
+      <th>Employee ID</th>
+      <th>Name</th>
+      <th>Grade</th>
+      <th>Location</th>
+      <th>Payroll Name</th>
+      <th>Days</th>
+      <th>Per Day</th>
+      <th>Final Amount</th>
+      <th>Holiday</th>
+      <th>Function Name</th>
+      <th>Line Manager</th>
+      <th>Function Manager</th>
+      <th>Functional Head</th>
+      <th>Remarks</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+      <tr>
+        <td>{{ entry.submission.payroll_month }}</td>
+        <td>{{ entry.employee_id }}</td>
+        <td>{{ entry.name }}</td>
+        <td>{{ entry.grade }}</td>
+        <td>{{ entry.location }}</td>
+        <td>{{ entry.payroll_name }}</td>
+        <td>{{ entry.days }}</td>
+        <td>{{ entry.per_day }}</td>
+        <td>{{ entry.final_amount }}</td>
+        <td>{{ entry.holiday }}</td>
+        <td>{{ entry.function_name }}</td>
+        <td>{{ entry.line_manager }}</td>
+        <td>{{ entry.function_manager }}</td>
+        <td>{{ entry.functional_head }}</td>
+        <td>{{ entry.remarks }}</td>
+        <td>
+          <a href="{% url 'delete_entry' entry.id %}" 
+             class="btn btn-sm btn-danger"
+             onclick="return confirm('Are you sure you want to delete this entry?');">
+             Delete
+          </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="16" class="text-center">No entries yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
