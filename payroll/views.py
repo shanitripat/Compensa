@@ -43,6 +43,7 @@ def new_submission(request):
         extra=5,
         can_delete=True  # ✅ NEW
     )
+    formset = EntryFormSet(request.POST or None, queryset=PayrollEntry.objects.none())
 
     if request.method == 'POST':
         sub_form = PayrollSubmissionForm(request.POST)

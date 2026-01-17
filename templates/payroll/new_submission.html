@@ -53,14 +53,23 @@
   const tableBody = document.querySelector('#entry-table tbody');
   const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
 
-  function cloneRow(){
+  // ✅ NEW: function to reindex all rows after add/remove
+  function reindexRows(){
     const rows = document.querySelectorAll('.entry-row');
-    const newIndex = rows.length;
-    const template = rows[0].cloneNode(true);
+    rows.forEach((row, index) => {
+      row.querySelectorAll('input, select, textarea').forEach((el) => {
+        el.name = el.name.replace(/form-(\d+)-/, `form-${index}-`);
+        el.id = el.id.replace(/id_form-(\d+)-/, `id_form-${index}-`);
+      });
+    });
+    totalForms.value = rows.length;  // ✅ keep TOTAL_FORMS in sync
+  }
 
+  function cloneRow(){
+    const template = tableBody.querySelector('.entry-row').cloneNode(true);
+
+    // ✅ NEW: clear values and hidden IDs
     template.querySelectorAll('input, select, textarea').forEach((el)=>{
-      el.name = el.name.replace(/form-(\d+)-/, `form-${newIndex}-`);
-      el.id = el.id.replace(/id_form-(\d+)-/, `id_form-${newIndex}-`);
       if(el.type === 'checkbox'){ 
         el.checked = false; 
       } else { 
@@ -69,7 +78,7 @@
     });
 
     tableBody.appendChild(template);
-    totalForms.value = newIndex + 1;
+    reindexRows();  // ✅ ensure indices and TOTAL_FORMS are updated
   }
 
   addBtn.addEventListener('click', cloneRow);
@@ -79,7 +88,7 @@
       const rows = document.querySelectorAll('.entry-row');
       if(rows.length > 1){
         e.target.closest('tr').remove();
-        totalForms.value = document.querySelectorAll('.entry-row').length;
+        reindexRows();  // ✅ reindex after removal
       }
     }
   });
