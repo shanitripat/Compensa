@@ -14,29 +14,33 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            # Save the user
-            user = form.save(commit=False)
-            user.save()
+            try:
+                # Save user
+                user = form.save()
 
-            # Create the profile with extra fields
-            Profile.objects.create(
-                user=user,
-                full_name=form.cleaned_data['full_name'],
-                imp_code=form.cleaned_data['imp_code'],
-                grade=form.cleaned_data['grade'],
-                location=form.cleaned_data['location'],
-                function_name=form.cleaned_data['function_name'],
-                line_manager=form.cleaned_data['line_manager'],
-                function_manager=form.cleaned_data['function_manager'],
-                functional_head=form.cleaned_data['functional_head'],
-            )
+                # Profile creation (safe)
+                Profile.objects.create(
+                    user=user,
+                    full_name=form.cleaned_data['full_name'],
+                    imp_code=form.cleaned_data['imp_code'],
+                    grade=form.cleaned_data['grade'],
+                    location=form.cleaned_data['location'],
+                    function_name=form.cleaned_data['function_name'],
+                    line_manager=form.cleaned_data['line_manager'],
+                    function_manager=form.cleaned_data['function_manager'],
+                    functional_head=form.cleaned_data['functional_head'],
+                )
 
-            # Show success message and redirect to login
-            messages.success(request, "Registration successful! Please login.")
-            return redirect('login')
+                messages.success(request, "Registration successful! Please login.")
+                return redirect('login')
+
+            except Exception as e:
+                messages.error(request, f"Error: {str(e)}")
+
         else:
-            # If form is invalid, show errors
+            print(form.errors)  # ✅ DEBUG in console
             messages.error(request, "Please correct the errors below.")
+
     else:
         form = RegistrationForm()
 
