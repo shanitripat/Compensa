@@ -17,7 +17,7 @@ LINE_MANAGERS = [
 ]
 
 FUNCTION_MANAGERS = [
-    ('Yougesh Bhatt', 'Yougesh Bhatt'),
+    ('Yougesh Bhat', 'Yougesh Bhat'),
 ]
 
 FUNCTION_HEADS = [
