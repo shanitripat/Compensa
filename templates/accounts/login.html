@@ -180,6 +180,23 @@
     background: #00D7BD;
     color: #0D1B2A;
   }
+
+  .app-title {
+  text-align: center;     /* ✅ center */
+  font-size: 30px;        /* ✅ slightly bigger */
+  font-weight: 800;       /* ✅ bold title */
+  color: #00695F;         /* ✅ Colt blue */
+  margin-bottom: 8px;
+  transition: all 0.25s ease;   /* ✅ smooth animation */
+  cursor: pointer;
+     /* ✅ small gap above User Login */
+}
+
+.app-title:hover {
+  color: #00695F;              /* slight purple accent */
+  transform: scale(1.05);      /* subtle zoom */
+}
+
 </style>
 
 <!-- ✅ Holiday link -->
@@ -187,9 +204,11 @@
   📅 Company Holidays
 </a>
 
+
 <!-- ✅ Login box -->
 <div class="login-wrapper">
-  <h1>Sign in to Compensa</h1>
+  <div class="app-title">Compensa</div>
+  <h1>User Login</h1>
 
   {% if form.errors %}
     <div class="error-message">
