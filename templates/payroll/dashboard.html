@@ -1,67 +1,321 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h4>Welcome, {{ user.get_username }}</h4>
-  <div>
-    <a class="btn btn-primary" href="{% url 'new_submission' %}">+ New Payroll Submission</a>
-    {% if user.is_superuser %}
-      <a class="btn btn-outline-danger" href="{% url 'export_all_submissions_csv' %}">
-        Export All Submissions (CSV)
+
+<div class="full-width-container">
+
+  <!-- Top Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="page-title">Welcome, {{ user.get_username }}</h4>
+
+
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-primary" href="{% url 'new_submission' %}">
+        + New Payroll Submission
       </a>
-    {% endif %}
+
+      {% if user.is_superuser %}
+      <a class="btn btn-outline-danger" href="{% url 'export_all_submissions_csv' %}">
+        Export CSV
+      </a>
+      {% endif %}
+    </div>
   </div>
+
+  <!-- ✅ TABLE WRAPPER -->
+  <div class="table-wrapper">
+    <table id="dashboard-table" class="table">
+
+      <thead class="table-header sticky-top">
+        <tr>
+          <th>Payroll Month</th>
+          <th>Emp ID</th>
+          <th>Name</th>
+          <th>Grade</th>
+          <th>Location</th>
+          <th>Payroll Name</th>
+          <th>Days</th>
+          <th>Rate</th>
+          <th>Amount</th> 
+          <th>Holiday</th>
+          <th>Function</th>
+          <th>Line Mgr</th>
+          <th>Func Mgr</th>
+          <th>Func Head</th>
+          <th>Remarks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for entry in entries %}
+        <tr>
+          <td>{{ entry.submission.payroll_month }}</td>
+          <td>{{ entry.employee_id }}</td>
+          <td>{{ entry.name }}</td>
+          <td>{{ entry.grade }}</td>
+          <td>{{ entry.location }}</td>
+          <td>{{ entry.payroll_name }}</td>
+          <td>{{ entry.days }}</td>
+          <td>{{ entry.per_day }}</td>
+          <td class="amount-cell">{{ entry.final_amount }}</td>
+          <td>{{ entry.holiday }}</td>
+          <td>{{ entry.function_name }}</td>
+          <td>{{ entry.line_manager }}</td>
+          <td>{{ entry.function_manager }}</td>
+          <td>{{ entry.functional_head }}</td>
+          <td>{{ entry.remarks }}</td>
+          <td>
+            <a href="{% url 'delete_entry' entry.id %}" 
+               class="btn btn-sm btn-outline-danger"
+               onclick="return confirm('Are you sure you want to delete this entry?');">
+              Delete
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="16" class="text-center text-muted">
+            No entries yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
 </div>
 
-<table class="table table-striped table-hover table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>Payroll Month</th>
-      <th>Employee ID</th>
-      <th>Name</th>
-      <th>Grade</th>
-      <th>Location</th>
-      <th>Payroll Name</th>
-      <th>Days</th>
-      <th>Per Day</th>
-      <th>Final Amount</th>
-      <th>Holiday</th>
-      <th>Function Name</th>
-      <th>Line Manager</th>
-      <th>Function Manager</th>
-      <th>Functional Head</th>
-      <th>Remarks</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for entry in entries %}
-      <tr>
-        <td>{{ entry.submission.payroll_month }}</td>
-        <td>{{ entry.employee_id }}</td>
-        <td>{{ entry.name }}</td>
-        <td>{{ entry.grade }}</td>
-        <td>{{ entry.location }}</td>
-        <td>{{ entry.payroll_name }}</td>
-        <td>{{ entry.days }}</td>
-        <td>{{ entry.per_day }}</td>
-        <td>{{ entry.final_amount }}</td>
-        <td>{{ entry.holiday }}</td>
-        <td>{{ entry.function_name }}</td>
-        <td>{{ entry.line_manager }}</td>
-        <td>{{ entry.function_manager }}</td>
-        <td>{{ entry.functional_head }}</td>
-        <td>{{ entry.remarks }}</td>
-        <td>
-          <a href="{% url 'delete_entry' entry.id %}" 
-             class="btn btn-sm btn-danger"
-             onclick="return confirm('Are you sure you want to delete this entry?');">
-             Delete
-          </a>
-        </td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="16" class="text-center">No entries yet.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<!-- ✅ Colt UI Styling -->
+<style>
+
+
+/* ==========================================
+   PAGE LAYOUT
+========================================== */
+
+.full-width-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.page-title {
+    color: #003A8F;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.btn-outline-primary {
+    color: #003A8F;
+    border: 1px solid #003A8F;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all .3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: #003A8F;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-danger {
+    border-radius: 10px;
+    transition: all .3s ease;
+}
+
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* ==========================================
+   TABLE WRAPPER
+========================================== */
+
+.table-wrapper {
+
+    width: 100%;
+    max-height: 75vh;
+    overflow: auto;
+
+    border-radius: 16px;
+
+    background: #F5F7FA;
+
+    border: 1px solid #D8DEE8;
+
+    box-shadow:
+        0 5px 25px rgba(0,0,0,.08);
+}
+
+/* ==========================================
+   TABLE
+========================================== */
+
+#dashboard-table {
+
+    width: max-content;
+    min-width: 2000px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.table-header th {
+
+    background: #003A8F;
+
+    color: white;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    padding: 14px;
+
+    white-space: nowrap;
+
+    border: none;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table-header th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.table-header th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* ==========================================
+   DATA ROWS
+========================================== */
+
+#dashboard-table tbody tr {
+
+    background: #FFFFFF;
+
+    transition: all .25s ease;
+}
+
+#dashboard-table tbody tr:nth-child(even) {
+
+    background: #FAFBFC;
+}
+
+#dashboard-table tbody tr:hover {
+
+    background: #F0F7FF;
+
+    box-shadow:
+        inset 4px 0 0 #003A8F;
+}
+
+/* ==========================================
+   CELLS
+========================================== */
+
+#dashboard-table td {
+
+    padding: 12px;
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #E8EDF3;
+
+    color: #333;
+}
+
+/* ==========================================
+   DATA PILL STYLE
+========================================== */
+
+#dashboard-table td:not(:last-child) {
+
+    font-weight: 500;
+}
+
+.amount-cell {
+
+    color: #00695F !important;
+    font-weight: 700;
+}
+
+/* ==========================================
+   PILL EFFECT FOR IMPORTANT COLUMNS
+========================================== */
+
+#dashboard-table td:nth-child(2),
+#dashboard-table td:nth-child(3),
+#dashboard-table td:nth-child(4),
+#dashboard-table td:nth-child(5),
+#dashboard-table td:nth-child(6) {
+
+    background: transparent;
+}
+
+#dashboard-table td:nth-child(6) {
+
+    color: #00695F;
+    font-weight: 700;
+}
+
+/* ==========================================
+   ACTION BUTTON
+========================================== */
+
+.btn-sm {
+
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+.table-wrapper::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #F5F7FA;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #B8C5D6;
+    border-radius: 20px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #8FA3C0;
+}
+
+/* ==========================================
+   EMPTY MESSAGE
+========================================== */
+
+.text-muted {
+    padding: 30px !important;
+    font-size: 15px;
+}
+
+
+</style>
+
 {% endblock %}
