@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.db import models
+from django.contrib.auth.models import User
+
+
 class PayrollSubmission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     payroll_month = models.CharField(max_length=20)  # e.g., "Dec'25"
@@ -30,3 +34,4 @@ class PayrollEntry(models.Model):
         if (self.final_amount is None) and self.days and self.per_day:
             self.final_amount = self.days * self.per_day
         super().save(*args, **kwargs)
+    
